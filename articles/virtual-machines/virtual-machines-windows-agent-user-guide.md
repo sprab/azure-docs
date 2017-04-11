@@ -40,6 +40,20 @@ The VM Agent can be installed by double-clicking the windows installer file. For
 msiexec.exe /i WindowsAzureVmAgent.2.7.1198.778.rd_art_stable.160617-1120.fre /quiet
 ```
 
+Manually installing the VM Agent does not modify the OS profile for VMs provisioned using specialised disk and "createOption" = "attach".  In this scenario the OS Profile will not be updated as this is currently not supported.  So the following PowerShell commands will not fetch the ProvisionVMAgent status.
+
+```Get-azureRMVM
+$vms = Get-AzureRmVM
+
+foreach ($vm in $vms) {
+
+    $agent = $vm | Select -ExpandProperty OSProfile | Select -ExpandProperty Windowsconfiguration. | Select ProvisionVMAgent
+
+    Write-Host $vm.Name $agent.ProvisionVMAgent
+
+} 
+```
+
 ## Detect the VM Agent
 
 ### PowerShell
@@ -79,3 +93,6 @@ When logged in to a Windows Azure VM, task manager can be used to examine runnin
 ## Upgrade the VM Agent
 
 The Azure VM Agent for Windows is automatically upgraded. As new virtual machines are deployed to Azure, they receive the latest VM agent. Custom VM images should be manually updated to include the new VM agent.
+
+
+
